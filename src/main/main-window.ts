@@ -33,6 +33,12 @@ export function createWindow() {
         mainWindow.setMenuBarVisibility(false);
         mainWindow.show();
         mainWindow.focus();
+
+        // Open the DevTools.
+        if (process.env.NODE_ENV === "development") {
+            log.debug(`NODE_ENV is development, opening dev tools`);
+            mainWindow.webContents.openDevTools();
+        }
     });
 
     mainWindow.webContents.on("render-process-gone", (event, details) => {
@@ -49,12 +55,6 @@ export function createWindow() {
         mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
     } else {
         mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-    }
-
-    // Open the DevTools.
-    if (process.env.NODE_ENV === "development") {
-        log.debug(`NODE_ENV is development, opening dev tools`);
-        mainWindow.webContents.openDevTools();
     }
 
     mainWindow.on("restore", () => mainWindow.flashFrame(false));

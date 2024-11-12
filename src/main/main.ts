@@ -17,6 +17,7 @@ import { miscService } from "@main/services/news.service";
 import { replayContentAPI } from "@main/content/replays/replay-content";
 import path from "path";
 import electronSquirrelStartup from "@main/utils/electron-squirrel-startup";
+import serverService from "@main/services/server.service";
 
 if (electronSquirrelStartup) {
     app.quit();
@@ -143,7 +144,7 @@ app.whenReady().then(() => {
 
     // Handlers may need the mainWindow to send events
     infoService.registerIpcHandlers();
-    settingsService.registerIpcHandlers();
+    settingsService.registerIpcHandlers(mainWindow);
     accountService.registerIpcHandlers();
     replaysService.registerIpcHandlers(mainWindow);
     engineService.registerIpcHandlers();
@@ -152,6 +153,7 @@ app.whenReady().then(() => {
     shellService.registerIpcHandlers();
     downloadsService.registerIpcHandlers(mainWindow);
     miscService.registerIpcHandlers();
+    serverService.registerIpcHandlers(mainWindow);
 
     const file = replayFileOpenedWithTheApp();
     if (file) {

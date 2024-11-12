@@ -5,68 +5,116 @@
 <template>
     <div class="container">
         <img ref="logo" class="logo" src="/src/renderer/assets/images/BARLogoFull.png" />
-        <div v-if="connecting" class="relative">
-            <Loader></Loader>
+
+        <div v-if="state === 'waiting_for_user'" class="flex-col flex-center-items">
+            <Button @click="connect" v-tooltip="'Login on the BAR website'" class="blue login">Login</Button>
+            <div class="play-offline" @click="playOffline">Play Offline</div>
         </div>
-        <!-- <Panel v-else-if="isConnected" class="login-forms" no-padding>
-            <TabView v-model:activeIndex="activeIndex">
-                <TabPanel header="Login">
-                    <LoginForm />
-                </TabPanel>
-                <TabPanel header="Register">
-                    <RegisterForm @register-success="activeIndex = 0" />
-                </TabPanel>
-                <TabPanel header="Reset Password">
-                    <ResetPasswordForm />
-                </TabPanel>
-            </TabView>
-        </Panel>
-        <div v-else class="flex-col gap-md">
-            <div class="txt-error">Disconnected from {{ serverAddress }}</div>
+
+        <div v-else-if="state === 'waiting_for_auth'" class="flex-col flex-center-items gap-md">
+            <Loader :absolutePosition="false"></Loader>
+            <p>Please authenticate via your web browser.</p>
             <Button class="retry gap-sm" @click="onRetry">
                 <Icon :icon="replayIcon" />
-                Reconnect
+                Retry
             </Button>
-        </div> -->
-        <div class="play-offline" @click="playOffline">Play Offline</div>
+        </div>
+
+        <div v-else-if="state === 'connecting'" class="relative">
+            <Loader></Loader>
+        </div>
+
+        <div v-else-if="state === 'connected'" class="flex-col flex-center-items gap-md">
+            <p>Connected!</p>
+            <Button @click="playOnline" class="gap-sm"><Icon :icon="playIcon" /> Play</Button>
+        </div>
+
+        <div v-else-if="state === 'error'" class="flex-col flex-center-items gap-md">
+            <p class="txt-error">
+                {{ error }}
+            </p>
+            <Button class="retry gap-sm" @click="onRetry">
+                <Icon :icon="replayIcon" />
+                Retry
+            </Button>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
+import { useRouter } from "vue-router";
+import replayIcon from "@iconify-icons/mdi/replay";
+import playIcon from "@iconify-icons/mdi/play";
+import { Icon } from "@iconify/vue";
 
 import Loader from "@renderer/components/common/Loader.vue";
-import { useRouter } from "vue-router";
+import Button from "@renderer/components/controls/Button.vue";
 
 const router = useRouter();
-
-// const activeIndex = ref(0);
-// const isConnected = true; // api.comms.isConnected;
-// const serverAddress = ""; //`${api.comms.config.host}:${api.comms.config.port}`;
-const connecting = ref(false);
+const state: Ref<"waiting_for_user" | "waiting_for_auth" | "connecting" | "connected" | "error"> = ref("waiting_for_user");
+const error = ref("");
 
 async function connect() {
     try {
-        // await api.comms.connect();
+        state.value = "connecting";
+        state.value = "waiting_for_auth";
+        const oauthToken = await window.server.auth();
+        console.log(oauthToken);
+        // TODO: store token
+        await window.server.connect(oauthToken.accessToken);
+        console.log("connected to websocket");
+
+        await window.settings.updateSettings({ offline: false });
+        state.value = "connected";
+        await router.push("/home");
     } catch (err) {
-        console.error(err);
+        state.value = "error";
+        if (err instanceof Error) {
+            if (
+                err.message.includes("ECONNREFUSED") ||
+                err.message.includes("fetch failed") ||
+                err.message.includes("ERR_CONNECTION_REFUSED") ||
+                err.message.includes("Failed to fetch")
+            ) {
+                error.value = `Could not connect to server at ${await window.server.getServerBaseUrl()}`;
+            } else {
+                error.value = err.message;
+                console.error(err);
+            }
+        } else {
+            error.value = "An unknown error occurred when trying to connect to the server.";
+            console.error(err);
+        }
     }
 }
 
-// async function onRetry() {
-//     connecting.value = true;
-//     await connect();
-//     await delay(100);
-//     connecting.value = false;
-// }
+async function onRetry() {
+    state.value = "waiting_for_user";
+    await connect();
+}
 
-async function playOffline() {
-    // api.session.offlineMode = true;
-    // api.comms.disconnect();
+async function playOnline() {
+    await window.settings.updateSettings({ offline: false });
     await router.push("/home/overview");
 }
 
-connect();
+async function playOffline() {
+    await window.server.disconnect();
+    await window.settings.updateSettings({ offline: true });
+    await router.push("/home/overview");
+}
+
+onMounted(async () => {
+    const settings = await window.settings.getSettings();
+    if ((await window.server.isConnected()) && settings?.loginAutomatically) {
+        await playOnline();
+    }
+
+    if (settings?.loginAutomatically) {
+        await connect();
+    }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -87,17 +135,17 @@ connect();
     margin-bottom: 80px;
 }
 
-.login-forms {
-    width: 100%;
-}
-
-.retry {
+.button {
     align-self: center;
+
+    :deep(.p-button).login {
+        font-size: 32px;
+        padding: 8px 16px;
+    }
 }
 
 .play-offline {
     display: flex;
-    align-self: center;
     margin-top: 20px;
     font-size: 32px;
     opacity: 0.3;

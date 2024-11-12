@@ -11,6 +11,7 @@ import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
 import { NewsFeedData } from "@main/services/news.service";
 import { BattleWithMetadata } from "@main/game/battle/battle-types";
+import { BarServerAPI } from "@main/server/server";
 
 const infoApi = {
     getInfo: (): Promise<Info> => ipcRenderer.invoke("info:get"),
@@ -56,6 +57,9 @@ const settingsApi = {
     getSettings: (): Promise<Settings> => ipcRenderer.invoke("settings:get"),
     updateSettings: (settings: Partial<Settings>): Promise<void> => ipcRenderer.invoke("settings:update", settings),
     toggleFullscreen: (): Promise<void> => ipcRenderer.invoke("settings:toggleFullscreen"),
+
+    // Events
+    onSettingsUpdate: (callback: (settings: Settings) => void) => ipcRenderer.on("settings:updated", (_event, settings) => callback(settings)),
 };
 export type SettingsApi = typeof settingsApi;
 contextBridge.exposeInMainWorld("settings", settingsApi);
@@ -140,3 +144,22 @@ const miscApi = {
 };
 export type MiscApi = typeof miscApi;
 contextBridge.exposeInMainWorld("misc", miscApi);
+
+const serverApi = {
+    // downloadMap: (springName: string): Promise<void> => ipcRenderer.invoke("maps:downloadMap", springName),
+    connect: (token: Parameters<BarServerAPI["connect"]>[0]): Promise<ReturnType<BarServerAPI["connect"]>> => ipcRenderer.invoke("server:connect", token),
+    // request: () => ipcRenderer.invoke("server:request", () => {}),
+    // sendEvent: () => ipcRenderer.invoke("server:sendEvent", () => {}),
+    // onEvent: () => ipcRenderer.invoke("server:onEvent", () => {}),
+    // nextEvent: () => ipcRenderer.invoke("server:nextEvent", () => {}),
+    // onResponse: () => ipcRenderer.invoke("server:onResponse", () => {}),
+    isConnected: (): Promise<ReturnType<BarServerAPI["isConnected"]>> => ipcRenderer.invoke("server:isConnected"),
+    disconnect: (): Promise<void> => ipcRenderer.invoke("server:disconnect"),
+    getServerBaseUrl: (): Promise<ReturnType<BarServerAPI["getServerBaseUrl"]>> => ipcRenderer.invoke("server:getServerBaseUrl"),
+    auth: (options?: Parameters<BarServerAPI["auth"]>[0]): ReturnType<BarServerAPI["auth"]> => ipcRenderer.invoke("server:auth", options),
+    // register: () => ipcRenderer.invoke("server:register", () => {}),
+    // Events
+    onConnectionClosed: (callback: () => Promise<any>) => ipcRenderer.on("server:connection-closed", (_event) => callback()),
+};
+export type ServerApi = typeof serverApi;
+contextBridge.exposeInMainWorld("server", serverApi);

@@ -13,11 +13,13 @@ import { DownloadInfo } from "@main/content/downloads";
 import { db } from "@renderer/store/db";
 import { downloadsStore } from "@renderer/store/downloads.store";
 import { onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 const emit = defineEmits<{
     (event: "complete"): void;
 }>();
 
+const router = useRouter();
 const text = ref("");
 const state = ref<"engine" | "game" | "maps">("engine");
 
@@ -43,6 +45,7 @@ onMounted(async () => {
         text.value = "Downloading maps";
         await window.maps.downloadMaps(defaultMaps);
     }
+    window.server.onConnectionClosed(async () => await router.push("/login"));
     emit("complete");
 });
 

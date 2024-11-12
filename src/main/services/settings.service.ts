@@ -17,6 +17,7 @@ const settingsStore = new FileStore<typeof settingsSchema>(path.join(CONFIG_PATH
     battlesHidePvE: false,
     battlesHideLocked: false,
     battlesHideEmpty: true,
+    offline: true,
 });
 
 function init() {
@@ -35,9 +36,12 @@ function toggleFullscreen() {
     settingsStore.update({ fullscreen: !settingsStore.model.fullscreen });
 }
 
-function registerIpcHandlers() {
+function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     ipcMain.handle("settings:get", () => getSettings());
-    ipcMain.handle("settings:update", (_, data: Partial<typeof settingsSchema>) => updateSettings(data));
+    ipcMain.handle("settings:update", async (_, data: Partial<typeof settingsSchema>) => {
+        const settings = await updateSettings(data);
+        mainWindow.webContents.send("settings:updated", settings);
+    });
     ipcMain.handle("settings:toggleFullscreen", () => toggleFullscreen());
 }
 
