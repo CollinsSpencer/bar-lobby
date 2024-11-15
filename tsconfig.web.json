@@ -1,0 +1,20 @@
+{
+    "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+    "include": ["src/renderer/env.d.ts", "src/renderer/typed-router.d.ts", "src/renderer/**/*", "src/renderer/**/*.vue", "src/preload/*.d.ts"],
+    "compilerOptions": {
+        "composite": true,
+        "baseUrl": ".",
+        "paths": {
+            "@main/*": ["src/main/*"], // TODO: Remove direct references to main
+            "@preload/*": ["src/preload/*"],
+            "@renderer/*": ["src/renderer/*"],
+            "$/*": ["vendor/*"]
+        },
+
+        // TODO: Enable these for better typechecking
+        "noImplicitReturns": false,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "strictNullChecks": false
+    }
+}
