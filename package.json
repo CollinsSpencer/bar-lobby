@@ -8,7 +8,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/beyond-all-reason/bar-lobby.git"
+        "url": "https://github.com/CollinsSpencer/bar-lobby.git"
     },
     "main": "out/main/main.js",
     "scripts": {
@@ -49,6 +49,7 @@
         "date-fns": "^4.1.0",
         "dexie": "^4.0.9",
         "dompurify": "^3.1.7",
+        "electron-updater": "^6.3.9",
         "env-paths": "^3.0.0",
         "flag-icons": "^7.2.3",
         "glob-promise": "^6.0.7",

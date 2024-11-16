@@ -15,6 +15,7 @@ import { shellService } from "@main/services/shell.service";
 import downloadsService from "@main/services/downloads.service";
 import replaysService from "@main/services/replays.service";
 import { miscService } from "@main/services/news.service";
+import { autoUpdaterService } from "@main/services/auto-updater.service";
 import { replayContentAPI } from "@main/content/replays/replay-content";
 import electronSquirrelStartup from "@main/utils/electron-squirrel-startup";
 
@@ -118,8 +119,7 @@ app.whenReady().then(() => {
             log.error("Vue Devtools failed to install:", err?.toString());
         }
     } else if (app.isPackaged && process.env.NODE_ENV === "production") {
-        // TODO enable electron forge's auto-updater
-        // see https://www.electronforge.io/advanced/auto-update
+        autoUpdaterService.init();
     }
 
     // Define CSP for all webContents

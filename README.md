@@ -86,7 +86,7 @@ npm run dev
   - Packages Electron app for distribution
     - Configured for Windows NSIS installer and Linux AppImage
   - Handles publishing updates
-    - Auto-updates TBD
+    - Auto-updates from GitHub Releases
 
 ### Commands
 
