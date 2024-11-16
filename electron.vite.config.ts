@@ -9,7 +9,7 @@ const nodeAlias = {
     $: resolve(__dirname, "vendor"),
 };
 const webAlias = {
-    "@main": resolve(__dirname, "src/main"),
+    "@main": resolve(__dirname, "src/main"), // TODO: Remove direct references to main
     "@preload": resolve(__dirname, "src/preload"),
     "@renderer": resolve(__dirname, "src/renderer"),
     $: resolve(__dirname, "vendor"),
@@ -49,7 +49,7 @@ export default defineConfig({
     },
     renderer: {
         // root: "src/renderer", <-- default set by electron-vite. This scopes requests within the renderer folder.
-        resolve: { alias: webAlias, preserveSymlinks: true },
+        resolve: { alias: webAlias },
         build: {
             sourcemap: true,
             assetsInlineLimit: (path: string) => {

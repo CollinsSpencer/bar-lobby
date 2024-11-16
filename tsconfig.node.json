@@ -9,7 +9,6 @@
         "paths": {
             "@main/*": ["src/main/*"],
             "@preload/*": ["src/preload/*"],
-            // "@renderer/*": ["src/renderer/*"], // TODO: Remove references to renderer
             "$/*": ["vendor/*"]
         },
 
