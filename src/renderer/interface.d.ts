@@ -1,4 +1,5 @@
-import { AccountApi, DownloadsApi, EngineApi, GameApi, InfoApi, MainWindowApi, MapsApi, MiscApi, ReplaysApi, ServerApi, SettingsApi, ShellApi } from "@preload/preload";
+import type { AccountApi, DownloadsApi, EngineApi, GameApi, InfoApi, MainWindowApi, MapsApi, MiscApi, ReplaysApi, SettingsApi, ShellApi } from "@preload/preload";
+import type { TransitionProps } from "vue";
 
 declare global {
     interface Window {
@@ -14,5 +15,20 @@ declare global {
         downloads: DownloadsApi;
         misc: MiscApi;
         server: ServerApi;
+    }
+}
+
+declare module "vue-router" {
+    interface RouteMeta {
+        title?: string;
+        order?: number;
+        availableOffline?: boolean;
+        hide?: boolean;
+        empty?: boolean;
+        blurBg?: boolean;
+        transition?: TransitionProps;
+        overflowY?: "scroll" | "hidden";
+        devOnly?: boolean;
+        redirect?: string;
     }
 }
