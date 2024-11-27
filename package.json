@@ -36,6 +36,7 @@
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",
         "axios": "^1.7.7",
+        "bufferutil": "^4.0.8",
         "chokidar": "^4.0.1",
         "date-fns": "^4.1.0",
         "dexie": "^4.0.10",
@@ -51,6 +52,7 @@
         "primeicons": "^6.0.1",
         "primevue": "3.23.0",
         "tachyon-client": "^11.0.0",
+        "utf-8-validate": "^5.0.10",
         "vue-i18n": "^10.0.4",
         "vue-router": "^4.5.0"
     },
