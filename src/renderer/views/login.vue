@@ -30,7 +30,7 @@
         </div>
 
         <div v-else-if="state === 'error'" class="flex-col flex-center-items gap-md">
-            <p class="txt-error">
+            <p class="txt-error txt-center">
                 {{ error }}
             </p>
             <Button class="retry gap-sm" @click="onRetry">

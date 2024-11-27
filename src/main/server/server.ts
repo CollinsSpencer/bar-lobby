@@ -12,8 +12,8 @@ export class BarServerAPI extends TachyonClient<"user"> {
     constructor() {
         super("user", {
             host: serverConfig.host,
-            port: serverConfig.port,
-            ssl: serverConfig.ssl,
+            port: serverConfig.port ?? 443,
+            ssl: serverConfig.ssl ?? true,
             logging: serverConfig.logging ?? true,
             requestHandlers: {
                 "battle/start": async (data) => {
