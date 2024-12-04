@@ -1,5 +1,6 @@
 import { TachyonClient } from "tachyon-client";
 import { serverConfig } from "@main/config/server";
+import { battleStart } from "@main/server/battle/start";
 
 /**
  * This class is a extension of the TachyonClient class.
@@ -16,11 +17,7 @@ export class BarServerAPI extends TachyonClient<"user"> {
             ssl: serverConfig.ssl ?? true,
             logging: serverConfig.logging ?? true,
             requestHandlers: {
-                "battle/start": async (data) => {
-                    return {
-                        status: "success",
-                    };
-                },
+                "battle/start": battleStart,
             },
         });
     }
