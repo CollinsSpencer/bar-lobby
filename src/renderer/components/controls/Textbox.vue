@@ -16,6 +16,5 @@ import Control from "@renderer/components/controls/Control.vue";
 }
 .p-inputtext {
     width: 100%;
-    padding: 0 10px;
 }
 </style>

@@ -1,4 +1,3 @@
-import "primevue/resources/primevue.min.css";
 import "flag-icons/css/flag-icons.min.css";
 import "primeicons/primeicons.css";
 import "@renderer/styles/styles.scss";
@@ -15,6 +14,7 @@ import { elementInViewDirective } from "@renderer/utils/element-in-view-directiv
 import { audioApi } from "@renderer/audio/audio";
 import { router } from "@renderer/router";
 import { initPreMountStores } from "@renderer/store/stores";
+import { BarThemePreset } from "@renderer/styles/primevue-theme";
 
 setupVue();
 
@@ -23,7 +23,7 @@ async function setupVue() {
 
     // Plugins
     app.use(router);
-    app.use(PrimeVue, { ripple: true });
+    app.use(PrimeVue, { ripple: true, theme: { preset: BarThemePreset, options: { darkModeSelector: false } } });
     app.use(await setupI18n());
 
     // Directives

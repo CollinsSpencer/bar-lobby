@@ -1,31 +1,26 @@
 <template>
     <Control class="number">
-        <PrimeVueInputNumber v-bind="$attrs" />
+        <InputNumber v-bind="$attrs" v-model="model" />
     </Control>
 </template>
 
 <script lang="ts" setup>
-import { InputNumberProps } from "primevue/inputnumber";
+import InputNumber, { InputNumberProps } from "primevue/inputnumber";
 import { computed, ref } from "vue";
 
 import Control from "@renderer/components/controls/Control.vue";
-import PrimeVueInputNumber from "@renderer/components/primevue/PrimeVueInputNumber.vue";
 
 defineProps<InputNumberProps>();
-defineEmits<{
-    (event: "update:modelValue", value: number): void;
-}>();
+const model = defineModel<number>();
 
-const max = ref(100);
-const maxInputWidth = computed(() => `${max.value.toString().length + 1}ch`);
+const minDigits = 3;
+const currentDigits = computed(() => model.value?.toString().match(/\d/g).length ?? 0);
+const inputWidth = computed(() => `${Math.max(minDigits, currentDigits.value)}ch`);
 </script>
 
 <style lang="scss" scoped>
 :deep(.p-inputtext) {
-    padding: 0 10px;
-    width: v-bind(maxInputWidth);
-}
-:deep(.p-button) {
-    margin-right: 5px;
+    box-sizing: content-box;
+    width: v-bind(inputWidth);
 }
 </style>

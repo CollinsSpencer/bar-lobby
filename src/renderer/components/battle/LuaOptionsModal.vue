@@ -1,7 +1,12 @@
 <template>
     <Modal ref="modal" :title="title" no-padding>
-        <TabView class="lua-options-panel">
-            <TabPanel v-for="section of sections.filter((section) => !section.hidden)" :key="section.key" :header="section.name">
+        <TabPanels class="lua-options-panel">
+            <TabPanel
+                v-for="section of sections.filter((section) => !section.hidden)"
+                :key="section.key"
+                :value="section.key"
+                :header="section.name"
+            >
                 <div class="gridform">
                     <template v-for="o in section.options.filter((option) => !option.hidden)" :key="o.key">
                         <div>
@@ -60,7 +65,7 @@
                     </template>
                 </div>
             </TabPanel>
-        </TabView>
+        </TabPanels>
         <template #footer>
             <div class="actions">
                 <Button class="fullwidth" @click="reset">Reset all to default</Button>
@@ -74,13 +79,13 @@
 import TabPanel from "primevue/tabpanel";
 import { Ref, ref } from "vue";
 import Modal from "@renderer/components/common/Modal.vue";
-import TabView from "@renderer/components/common/TabView.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import Range from "@renderer/components/controls/Range.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import { LuaOptionSection, LuaOptionNumber, LuaOptionBoolean, LuaOptionString, LuaOptionList } from "@main/content/game/lua-options";
 import Textarea from "@renderer/components/controls/Textarea.vue";
+import TabPanels from "primevue/tabpanels";
 
 const props = defineProps<{
     id: string;
@@ -143,10 +148,10 @@ function reset() {
 
 .overriden {
     color: #ffcc00;
-    ::v-deep .p-slider-handle {
+    :deep(.p-slider-handle) {
         background-color: #ffcc00;
     }
-    ::v-deep .p-slider-range {
+    :deep(.p-slider-range) {
         background-color: #ffcc00;
     }
 }

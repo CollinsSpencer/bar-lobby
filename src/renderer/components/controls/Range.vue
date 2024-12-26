@@ -14,20 +14,6 @@
             @update:modelValue="typeof modelValue === 'number' ? onInput : (input: number) => onInput([low, input])"
             class="max"
         />
-        <!-- <InputNumber
-            v-if="!range && typeof modelValue === 'number'"
-            v-bind="$attrs"
-            :modelValue="typeof modelValue === 'number' ? modelValue : high"
-            @update:modelValue="onInput"
-            class="max"
-        />
-        <InputNumber
-            v-if="range"
-            v-bind="$attrs"
-            :modelValue="high"
-            @update:modelValue="(input: number) => onInput([low, input])"
-            class="max"
-        /> -->
     </Control>
 </template>
 
@@ -49,10 +35,16 @@ const emits = defineEmits<{
 const low = computed(() => (props.modelValue instanceof Array ? props.modelValue[0] : null));
 const high = computed(() => (props.modelValue instanceof Array ? props.modelValue[1] : null));
 
-const min = computed<number>(() => props?.min ?? 0);
-const minInputWidth = computed(() => `${min.value.toString().length + 1}ch`);
-const max = computed<number>(() => props?.max ?? 100);
-const maxInputWidth = computed(() => `${max.value.toString().length + 1}ch`);
+const minDigits = 3;
+const minCurrentDigits = computed(() => props?.min?.toString().match(/\d/g).length ?? 0);
+const minInputWidth = computed(() => `${Math.max(minDigits, minCurrentDigits.value) + 2}ch`);
+const maxCurrentDigits = computed(() => props?.max?.toString().match(/\d/g).length ?? 0);
+const maxInputWidth = computed(() => `${Math.max(minDigits, maxCurrentDigits.value) + 2}ch`);
+
+// const min = computed<number>(() => props?.min ?? 0);
+// const minInputWidth = computed(() => `${min.value.toString().length + 1}ch`);
+// const max = computed<number>(() => props?.max ?? 100);
+// const maxInputWidth = computed(() => `${max.value.toString().length + 1}ch`);
 
 function onSlide(input: number | number[]) {
     emits("update:modelValue", input);
@@ -71,38 +63,6 @@ function onInput(input: number | number[]) {
 :deep(.p-slider) {
     width: 100%;
     margin: 0 15px;
-    &:before {
-        @extend .fullsize;
-        left: 0;
-        top: 0;
-        background: #111;
-        border-radius: 5px;
-        overflow: hidden;
-    }
-    &.p-slider-horizontal {
-        height: 0.286rem;
-    }
-    .p-slider-range {
-        background: #ddd;
-        border-radius: 5px;
-    }
-    .p-slider-handle {
-        top: 50%;
-        height: 15px;
-        width: 15px;
-        background: #eee;
-        border-radius: 50%;
-        transform: translateX(-50%) translateY(-50%);
-        transition:
-            background-color 0.2s,
-            color 0.2s,
-            border-color 0.2s,
-            box-shadow 0.2s;
-    }
-    .p-slider-sliding .p-slider-handle,
-    .p-slider-handle:hover {
-        background-color: #fff;
-    }
 }
 .min :deep(.p-inputtext) {
     width: v-bind(minInputWidth);
@@ -111,23 +71,5 @@ function onInput(input: number | number[]) {
 .max :deep(.p-inputtext) {
     width: v-bind(maxInputWidth);
     text-align: center;
-}
-.p-inputwrapper {
-    position: relative;
-    height: 100%;
-    padding: 5px;
-    &:before {
-        position: absolute;
-        height: 100%;
-        width: 1px;
-        left: 0;
-        content: "";
-        top: 0;
-        background: rgba(255, 255, 255, 0.1);
-    }
-    &.min:before {
-        left: unset;
-        right: 0;
-    }
 }
 </style>

@@ -30,6 +30,7 @@
         "@iconify/json": "^2.2.288",
         "@iconify/vue": "^4.2.0",
         "@octokit/rest": "^21.0.2",
+        "@primevue/themes": "^4.2.5",
         "@sinclair/typebox": "^0.34.13",
         "@vueuse/core": "^12.2.0",
         "7zip-min": "^1.4.5",
@@ -48,8 +49,8 @@
         "marked": "^15.0.4",
         "pino": "^9.6.0",
         "pino-pretty": "^13.0.0",
-        "primeicons": "^6.0.1",
-        "primevue": "3.23.0",
+        "primeicons": "^7.0.0",
+        "primevue": "^4.2.5",
         "vue-i18n": "^10.0.5",
         "vue-router": "^4.5.0"
     },

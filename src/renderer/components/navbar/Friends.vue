@@ -1,7 +1,7 @@
 <template>
     <PopOutPanel :open="modelValue" class="flex-col flex-grow fullheight">
-        <TabView v-model:activeIndex="activeIndex" class="flex-col flex-grow fullheight">
-            <TabPanel header="Friends">
+        <TabPanels v-model:activeIndex="activeIndex" class="flex-col flex-grow fullheight">
+            <TabPanel header="Friends" value="friends">
                 <div class="flex-col gap-lg flex-grow fullheight">
                     <div class="flex-row gap-md">
                         <div>
@@ -67,8 +67,8 @@
                     </div>
                 </div>
             </TabPanel>
-            <TabPanel header="Blocked"> TODO </TabPanel>
-        </TabView>
+            <TabPanel header="Blocked" value="blocked"> TODO </TabPanel>
+        </TabPanels>
     </PopOutPanel>
 </template>
 
@@ -88,12 +88,12 @@ import TabPanel from "primevue/tabpanel";
 import { computed, inject, Ref, ref, watch } from "vue";
 
 import Accordion from "@renderer/components/common/Accordion.vue";
-import TabView from "@renderer/components/common/TabView.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Number from "@renderer/components/controls/Number.vue";
 import Friend from "@renderer/components/navbar/Friend.vue";
 import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
 import { me } from "@renderer/store/me.store";
+import TabPanels from "primevue/tabpanels";
 
 const props = defineProps<{
     modelValue: boolean;

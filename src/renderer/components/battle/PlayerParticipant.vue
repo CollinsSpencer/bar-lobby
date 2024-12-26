@@ -26,11 +26,11 @@ import { Icon } from "@iconify/vue";
 import checkBold from "@iconify-icons/mdi/check-bold";
 import cloudDownload from "@iconify-icons/mdi/cloud-download";
 import { delay } from "$/jaz-ts-utils/delay";
+import ContextMenu from "primevue/contextmenu";
 import { MenuItem } from "primevue/menuitem";
 import { computed, inject, Ref, ref } from "vue";
 
 import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
-import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { useRouter } from "vue-router";
 import { Player } from "@main/game/battle/battle-types";

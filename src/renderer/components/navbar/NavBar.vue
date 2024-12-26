@@ -218,7 +218,6 @@ const serverOffline = true;
 .logo {
     .button {
         font-size: 25px;
-        font-weight: 600;
         background: radial-gradient(rgba(73, 49, 49, 0), rgba(255, 255, 255, 0.05));
         color: rgba(255, 255, 255, 0.8);
         box-shadow:
@@ -231,7 +230,10 @@ const serverOffline = true;
         text-transform: uppercase;
         max-height: unset;
         :deep(.p-button) {
+            background: none;
+            border: none;
             padding: 0 22px;
+            font-size: inherit;
         }
         &.icon {
             :deep(.p-button) {
@@ -300,7 +302,9 @@ const serverOffline = true;
         border: none;
         color: rgba(255, 255, 255, 0.5);
         flex-grow: 0;
-        :deep(> button) {
+        :deep(.p-button) {
+            background: none;
+            border: none;
             padding: 0 20px;
         }
         &:hover,

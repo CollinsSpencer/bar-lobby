@@ -10,11 +10,12 @@
 
 <script lang="ts" setup>
 import { delay } from "$/jaz-ts-utils/delay";
+import ContextMenu from "primevue/contextmenu";
 import { MenuItem } from "primevue/menuitem";
 import { inject, Ref, ref } from "vue";
 
 import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
-import ContextMenu from "@renderer/components/common/ContextMenu.vue";
+// import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { useRouter } from "vue-router";
 import { Player } from "@main/game/battle/battle-types";

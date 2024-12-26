@@ -1,7 +1,7 @@
 <template>
     <PopOutPanel :open="modelValue">
-        <TabView v-model:activeIndex="activeTabIndex" class="messages-tabview">
-            <TabPanel v-for="[userId, messages] in directMessages" :key="userId">
+        <TabPanels v-model:activeIndex="activeTabIndex" class="messages-tabview">
+            <TabPanel v-for="[userId, messages] in directMessages" :key="userId" :value="userId">
                 <template #header>
                     <div class="tab-header">
                         <div>{{ getUsername(userId) }}</div>
@@ -33,7 +33,7 @@
                     <Button @click="sendDirectMessage(userId, text)">Send</Button>
                 </div>
             </TabPanel>
-            <TabPanel>
+            <TabPanel value="chat">
                 <template #header>
                     <Icon :icon="chatPlus" />
                 </template>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </TabPanel>
-        </TabView>
+        </TabPanels>
     </PopOutPanel>
 </template>
 
@@ -60,13 +60,13 @@ import chatPlus from "@iconify-icons/mdi/chat-plus";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import TabPanel from "primevue/tabpanel";
 import { inject, Ref, ref } from "vue";
-import TabView from "@renderer/components/common/TabView.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import Markdown from "@renderer/components/misc/Markdown.vue";
 import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
 import { Message } from "@renderer/model/messages";
 import { me } from "@renderer/store/me.store";
+import TabPanels from "primevue/tabpanels";
 
 const props = defineProps<{
     modelValue: boolean;
