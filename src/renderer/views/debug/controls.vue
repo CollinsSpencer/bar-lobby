@@ -41,8 +41,15 @@
                 </div>
                 <div class="flex-row gap-md flex-center-items">
                     <h5>Number</h5>
-                    <Number :modelValue="num" showButtons @update:model-value="onUpdateNum" />
-                    <Number v-model="num" label="Label" showButtons />
+                    <Number :modelValue="num" @update:model-value="onUpdateNum" />
+                    <Number v-model="num" label="Label" showButtons buttonLayout="horizontal">
+                        <template #incrementicon>
+                            <span class="pi pi-plus" />
+                        </template>
+                        <template #decrementicon>
+                            <span class="pi pi-minus" />
+                        </template>
+                    </Number>
                     <Number v-model="num" :disabled="true" />
                     <div class="value">{{ num }}</div>
                 </div>
@@ -100,7 +107,7 @@
                     <h5>Options</h5>
                     <Options :modelValue="option" :options="options" @update:model-value="onUpdateOption" />
                     <Options v-model="option" :options="options" label="Label" />
-                    <Options v-model="option" :options="options" :unselectable="false" />
+                    <Options v-model="option" :options="options" :unselectable="true" />
                     <Options v-model="option" :options="options" :disabled="true" />
                 </div>
                 <div class="flex-row">

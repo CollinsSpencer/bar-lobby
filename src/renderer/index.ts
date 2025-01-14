@@ -23,7 +23,7 @@ async function setupVue() {
 
     // Plugins
     app.use(router);
-    app.use(PrimeVue, { ripple: true, theme: { preset: BarThemePreset, options: { darkModeSelector: false } } });
+    app.use(PrimeVue, { ripple: true, theme: { preset: BarThemePreset, options: { darkModeSelector: ".bar-app-dark" } } });
     app.use(await setupI18n());
 
     // Directives

@@ -1,57 +1,25 @@
 <template>
     <Control class="checkbox">
-        <div class="check-wrapper" @click="onClick">
-            <Icon v-if="modelValue" :icon="checkBold" height="22px" />
-        </div>
+        <ToggleButton v-bind="$attrs" v-model="checked">
+            <span class="icon pi pi-check" v-if="checked" />
+            <span class="icon" v-else></span>
+        </ToggleButton>
     </Control>
 </template>
 
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
-import checkBold from "@iconify-icons/mdi/check-bold";
-import { toRef } from "vue";
-
 import Control from "@renderer/components/controls/Control.vue";
+import ToggleButton from "primevue/togglebutton";
 
-const props = withDefaults(
-    defineProps<{
-        modelValue?: boolean;
-    }>(),
-    {
-        modelValue: false,
-    }
-);
-
-const emits = defineEmits<{
-    (event: "update:modelValue", checked: boolean): void;
-}>();
-
-const value = toRef(props, "modelValue");
-
-function onClick() {
-    emits("update:modelValue", !value.value);
-}
+const checked = defineModel<boolean>();
 </script>
 
 <style lang="scss" scoped>
-.checkbox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row-reverse;
-    :deep(.label) {
-        border-right: none;
-        border-left: 1px solid rgba(255, 255, 255, 0.1);
-    }
+:deep(.p-togglebutton) {
+    padding: 0.75rem;
 }
-.check-wrapper {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 33px;
-    max-height: 33px;
-    max-width: 33px;
-    min-width: 33px;
+.icon {
+    width: var(--p-icon-size);
+    height: var(--p-icon-size);
 }
 </style>

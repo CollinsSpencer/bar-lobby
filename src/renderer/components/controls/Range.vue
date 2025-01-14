@@ -3,13 +3,17 @@
         <InputNumber
             v-if="range"
             v-bind="$attrs"
+            :disabled="$props.disabled"
             :modelValue="low"
             @update:modelValue="(input: number) => onInput([input, high])"
             class="min"
         />
-        <Slider v-bind="$props" :modelValue="modelValue" @update:modelValue="onSlide" />
+        <InputGroupAddon class="slider-wrapper">
+            <Slider v-bind="$props" :modelValue="modelValue" @update:modelValue="onSlide" />
+        </InputGroupAddon>
         <InputNumber
             v-bind="$attrs"
+            :disabled="$props.disabled"
             :modelValue="typeof modelValue === 'number' ? modelValue : high"
             @update:modelValue="typeof modelValue === 'number' ? onInput : (input: number) => onInput([low, input])"
             class="max"
@@ -18,10 +22,12 @@
 </template>
 
 <script lang="ts" setup>
+// https://primevue.org/slider/
+
 import { computed } from "vue";
-// https://v3.primevue.org/slider/
 import InputNumber from "primevue/inputnumber";
 import Slider, { type SliderProps } from "primevue/slider";
+import InputGroupAddon from "primevue/inputgroupaddon";
 
 import Control from "@renderer/components/controls/Control.vue";
 
@@ -35,16 +41,11 @@ const emits = defineEmits<{
 const low = computed(() => (props.modelValue instanceof Array ? props.modelValue[0] : null));
 const high = computed(() => (props.modelValue instanceof Array ? props.modelValue[1] : null));
 
-const minDigits = 3;
+const minDigits = 2;
 const minCurrentDigits = computed(() => props?.min?.toString().match(/\d/g).length ?? 0);
-const minInputWidth = computed(() => `${Math.max(minDigits, minCurrentDigits.value) + 2}ch`);
+const minInputWidth = computed(() => `${Math.max(minDigits, minCurrentDigits.value)}ch`);
 const maxCurrentDigits = computed(() => props?.max?.toString().match(/\d/g).length ?? 0);
-const maxInputWidth = computed(() => `${Math.max(minDigits, maxCurrentDigits.value) + 2}ch`);
-
-// const min = computed<number>(() => props?.min ?? 0);
-// const minInputWidth = computed(() => `${min.value.toString().length + 1}ch`);
-// const max = computed<number>(() => props?.max ?? 100);
-// const maxInputWidth = computed(() => `${max.value.toString().length + 1}ch`);
+const maxInputWidth = computed(() => `${Math.max(minDigits, maxCurrentDigits.value)}ch`);
 
 function onSlide(input: number | number[]) {
     emits("update:modelValue", input);
@@ -60,16 +61,26 @@ function onInput(input: number | number[]) {
     width: 100%;
     align-self: center;
 }
+.slider-wrapper {
+    flex: 1;
+}
 :deep(.p-slider) {
     width: 100%;
     margin: 0 15px;
 }
-.min :deep(.p-inputtext) {
+:deep(.p-inputgroup .p-inputnumber) {
+    flex: 0 1 content;
+}
+:deep(.min.p-inputnumber .p-inputtext) {
+    box-sizing: content-box;
     width: v-bind(minInputWidth);
     text-align: center;
+    flex: 0;
 }
-.max :deep(.p-inputtext) {
+:deep(.max.p-inputnumber .p-inputtext) {
+    box-sizing: content-box;
     width: v-bind(maxInputWidth);
     text-align: center;
+    flex: 0;
 }
 </style>
