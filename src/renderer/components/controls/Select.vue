@@ -1,6 +1,6 @@
 <template>
     <Control class="select">
-        <Select :autoFilterFocus="true" :autoOptionFocus="true" :resetFilterOnHide="true" v-bind="$attrs" />
+        <Select :autoOptionFocus="true" :resetFilterOnHide="true" v-bind="{ ...$attrs, ...$props }" />
     </Control>
 </template>
 

@@ -37,6 +37,7 @@
                         :filter="true"
                         :placeholder="battleStore.battleOptions.gameVersion"
                         @update:model-value="onGameSelected"
+                        class="fullwidth"
                     />
                 </div>
                 <div v-if="settingsStore.devMode">

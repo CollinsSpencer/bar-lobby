@@ -120,10 +120,10 @@ export const BarThemePreset = definePreset(Aura, {
                     950: "{gray.950}",
                 },
                 primary: {
-                    color: "{primary.500}",
+                    color: "color-mix(in srgb, {primary.50} 20%, transparent)",
                     contrastColor: "#ffffff",
-                    hoverColor: "{primary.600}",
-                    activeColor: "{primary.700}",
+                    hoverColor: "color-mix(in srgb, {primary.600} 20%, transparent)",
+                    activeColor: "color-mix(in srgb, {primary.700} 20%, transparent)",
                 },
                 // highlight: {
                 //     background: "{primary.800}",
@@ -144,10 +144,10 @@ export const BarThemePreset = definePreset(Aura, {
 
                 formField: {
                     borderRadius: "0",
-                    background: "color-mix(in srgb, {primary.200}, transparent 90%)",
+                    background: "color-mix(in srgb, {primary.50} 10%, transparent)",
                     color: "{surface.200}",
                     placeholder: { color: "{surface.200}" },
-                    disabledBackground: "color-mix(in srgb, {surface.700}, transparent 90%)",
+                    disabledBackground: "color-mix(in srgb, {surface.700} 10%, transparent)",
                     // disabled: { color: "{surface.400}", background: "color-mix(in srgb, {primary.600}, transparent 90%)", border: "{surface: 600}" },
                 },
                 overlay: {

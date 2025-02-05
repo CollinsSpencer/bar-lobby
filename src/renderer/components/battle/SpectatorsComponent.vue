@@ -1,9 +1,9 @@
 <template>
     <div key="spectators" class="group" data-type="group" @dragenter.prevent="onDragEnter($event)" @dragover.prevent @drop="onDrop($event)">
         <div class="flex-row flex-center-items gap-md">
-            <div class="title">{{ title }}</div>
+            <div class="title flex-grow">{{ title }}</div>
             <div v-if="memberCount > 0" class="member-count">({{ memberCount }} Member{{ memberCount > 1 ? "s" : "" }})</div>
-            <Button v-if="showJoin" class="slim black" @click="onJoinClicked()"> Join </Button>
+            <Button v-if="showJoin" size="small" @click="onJoinClicked()"> Join </Button>
         </div>
         <div class="participants">
             <div

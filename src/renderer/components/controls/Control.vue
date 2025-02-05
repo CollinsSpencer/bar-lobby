@@ -1,6 +1,6 @@
 <template>
     <div class="control">
-        <InputGroup :class="{ disabled }" @mouseenter="onMouseEnter">
+        <InputGroup style="align-self: stretch" :class="{ disabled }" @mouseenter="onMouseEnter">
             <InputGroupAddon v-if="label">
                 <label :for="props.for" class="label">{{ label }}</label>
             </InputGroupAddon>

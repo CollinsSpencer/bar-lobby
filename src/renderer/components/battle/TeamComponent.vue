@@ -12,13 +12,11 @@
         @drop="onDrop($event, teamId)"
     >
         <div class="group-header flex-row flex-center-items gap-md">
-            <div class="title">{{ title }}</div>
+            <div class="title flex-grow">{{ title }}</div>
             <div class="member-count" v-if="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)">
                 ({{ memberCount }}/{{ maxPlayersPerTeam }} players)
             </div>
-            <Button class="slim black" @click="addBotClicked(teamId)" v-if="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)">
-                Add bot
-            </Button>
+            <Button size="small" @click="addBotClicked(teamId)" v-if="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)"> Add bot </Button>
             <!-- <Button v-if="showJoin" class="slim black" @click="onJoinClicked(teamId)">Join</Button> -->
         </div>
         <div
