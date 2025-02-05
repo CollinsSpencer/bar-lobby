@@ -42,7 +42,7 @@ import { Ref, ref } from "vue";
 import AddBotModal from "@renderer/components/battle/AddBotModal.vue";
 import TeamComponent from "@renderer/components/battle/TeamComponent.vue";
 import { EngineAI } from "@main/content/engine/engine-version";
-import { Bot, isBot, Player } from "@main/game/battle/battle-types";
+import { Bot, isBot, isRaptor, isScavenger, Player } from "@main/game/battle/battle-types";
 import { battleWithMetadataStore, battleStore, battleActions } from "@renderer/store/battle.store";
 import SpectatorsComponent from "@renderer/components/battle/SpectatorsComponent.vue";
 import { GameAI } from "@main/content/game/game-version";
@@ -109,6 +109,7 @@ function dragEnterSpectators(event: DragEvent) {
 
 function dragStart(event: DragEvent, participant: Player | Bot) {
     if (isBot(participant)) {
+        if (isRaptor(participant) || isScavenger(participant)) return;
         draggedBot.value = participant;
     } else {
         draggedPlayer.value = participant;
@@ -162,14 +163,11 @@ function onDropSpectators(event: DragEvent) {
 <style lang="scss" scoped>
 .playerlist {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-auto-rows: max-content;
     gap: 10px;
     &.dragging .group > * {
         pointer-events: none;
-    }
-    @media (max-width: 1919px) {
-        grid-template-columns: 1fr;
     }
 }
 </style>

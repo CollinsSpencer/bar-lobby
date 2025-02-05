@@ -1,11 +1,12 @@
 import { MapData } from "@main/content/maps/map-data";
 import { User } from "@main/model/user";
+import { StartBox } from "tachyon-protocol/types";
 
 export interface Battle {
     title: string;
     isOnline: boolean;
     battleOptions: BattleOptions;
-    me: Player;
+    me?: Player;
     teams: Array<Array<Player | Bot>>;
     spectators: Player[];
     started: boolean;
@@ -14,13 +15,24 @@ export interface Battle {
 export interface BattleWithMetadata extends Battle {
     startTime?: Date;
     participants: Array<Player | Bot>;
+    bots: Bot[];
+    players: Player[];
 }
 
+export type GameModeType = "Classic" | "Skirmish" | "Raptors" | "Scavengers" | "FFA";
+
 export type GameMode = {
-    label: string;
+    label: GameModeType;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     options: Record<string, any>;
 };
+
+export enum StartBoxOrientation {
+    EastVsWest = "EastVsWest",
+    NorthVsSouth = "NorthVsSouth",
+    NortheastVsSouthwest = "NortheastVsSouthwest",
+    NorthwestVsSoutheast = "NorthwestVsSoutheast",
+}
 
 export type BattleOptions = {
     engineVersion?: string;
@@ -30,6 +42,8 @@ export type BattleOptions = {
     mapOptions: {
         startPosType: StartPosType;
         startBoxesIndex?: number;
+        customStartBoxes?: StartBox[];
+        customStartBoxPreset?: StartBoxOrientation;
         fixedPositionsIndex?: number;
     };
     restrictions: Restriction[];
@@ -54,16 +68,12 @@ export type SpadsBattleOptions = {
     balanceMode: string;
 };
 
-export type StartBox = {
-    xPercent: number;
-    yPercent: number;
-    widthPercent: number;
-    heightPercent: number;
-};
-
 export enum StartPosType {
+    /** automatic spawning using default map start positions, in fixed order */
     Fixed = 0,
+    /** automatic spawning using default map start positions, in random order */
     Random = 1,
+    /** manual spawning based on positions chosen by players in start boxes */
     Boxes = 2,
 }
 
@@ -108,7 +118,7 @@ export type Player = {
 
 export type Bot = {
     id: number;
-    ownerUserId: number;
+    host: number;
     aiShortName: string;
     name: string;
     aiOptions: Record<string, unknown>;
@@ -124,6 +134,14 @@ export type Bot = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isBot(bot: any): bot is Bot {
     return "aiShortName" in bot;
+}
+
+export function isRaptor(bot: Bot): boolean {
+    return bot.aiShortName === "RaptorsAI";
+}
+
+export function isScavenger(bot: Bot): boolean {
+    return bot.aiShortName === "ScavengersAI";
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

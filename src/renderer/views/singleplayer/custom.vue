@@ -4,35 +4,28 @@
 
 <template>
     <div class="view">
-        <Panel class="flex-grow">
-            <div class="flex-col flex-grow">
-                <OfflineBattleComponent />
+        <div class="custom-game-container">
+            <div class="view-title">
+                <h1>Custom game</h1>
+                <p>Play against the AI in a custom game mode.</p>
             </div>
-        </Panel>
+            <GameModeSelector />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import OfflineBattleComponent from "@renderer/components/battle/OfflineBattleComponent.vue";
-import Panel from "@renderer/components/common/Panel.vue";
-import { battleStore } from "@renderer/store/battle.store";
-import { enginesStore } from "@renderer/store/engine.store";
-import { gameStore } from "@renderer/store/game.store";
-import { getRandomMap } from "@renderer/store/maps.store";
-import { onMounted } from "vue";
-
-onMounted(async () => {
-    if (!battleStore.battleOptions.engineVersion) {
-        battleStore.battleOptions.engineVersion = enginesStore.selectedEngineVersion.id;
-    }
-    if (!battleStore.battleOptions.gameVersion) {
-        battleStore.battleOptions.gameVersion = gameStore.selectedGameVersion.gameVersion;
-    }
-    if (!battleStore.battleOptions.map) {
-        const randomMap = await getRandomMap();
-        battleStore.battleOptions.map = randomMap;
-    }
-});
+import GameModeSelector from "@renderer/components/misc/GameModeSelector.vue";
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.custom-game-container {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    gap: 20px;
+    height: 100%;
+    width: 1300px;
+    overflow: visible;
+}
+</style>

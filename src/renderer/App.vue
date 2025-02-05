@@ -3,11 +3,13 @@
         <transition mode="in-out" name="intro">
             <IntroVideo v-if="!settingsStore.skipIntro && videoVisible" @complete="onIntroEnd" />
         </transition>
-        <DebugSidebar v-if="settingsStore.devMode" />
-        <StickyBattle />
+        <Suspense>
+            <DebugSidebar v-if="settingsStore.devMode" />
+        </Suspense>
+        <StickyBattle v-if="state === 'default'" />
         <Background :blur="blurBg" />
-        <Notifications />
-        <PromptContainer />
+        <Notifications v-if="state === 'default'" />
+        <PromptContainer v-if="state === 'default'" />
         <NavBar :class="{ hidden: empty || state === 'preloader' || state === 'initial-setup' }" />
         <div class="lobby-version">
             {{ infosStore.lobby.version }}
@@ -23,7 +25,7 @@
         <Transition mode="out-in" name="fade">
             <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
-            <div class="view-container" v-else>
+            <div class="view-container" :class="{ 'translated-right': battleStore.isLobbyOpened }" v-else>
                 <RouterView v-slot="{ Component, route }">
                     <template v-if="Component">
                         <Transition v-bind="route.meta.transition" mode="out-in">
@@ -42,6 +44,8 @@
         </Transition>
         <Settings v-model="settingsOpen" />
         <Error />
+        <ChatComponent v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
+        <FullscreenGameModeSelector v-if="state === 'default'" :visible="battleStore.isSelectingGameMode" />
     </div>
 </template>
 
@@ -69,14 +73,19 @@ import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
 import { playRandomMusic } from "@renderer/utils/play-random-music";
 import { settingsStore } from "./store/settings.store";
 import { infosStore } from "@renderer/store/infos.store";
+import ChatComponent from "@renderer/components/social/ChatComponent.vue";
+import { battleStore } from "@renderer/store/battle.store";
+import FullscreenGameModeSelector from "@renderer/components/battle/FullscreenGameModeSelector.vue";
 import { useGlobalKeybindings } from "@renderer/composables/useGlobalKeybindings";
+import { me } from "@renderer/store/me.store";
+import { tachyonStore } from "@renderer/store/tachyon.store";
 
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(router.currentRoute.value?.meta?.empty ?? false);
-const blurBg = ref(router.currentRoute.value?.meta?.blurBg ?? true);
+const blurBg = ref(router.currentRoute.value?.meta?.blurBg ?? false);
 
 const settingsOpen = ref(false);
 const exitOpen = ref(false);
@@ -110,7 +119,7 @@ router.beforeEach(async (to) => {
 router.afterEach(async (to) => {
     simpleRouterMemory.set(to.fullPath.split("/")[1], to.fullPath);
     empty.value = to?.meta?.empty ?? false;
-    blurBg.value = to?.meta?.blurBg ?? blurBg.value;
+    blurBg.value = to?.meta?.blurBg ?? false;
 });
 
 function onIntroEnd() {
@@ -119,20 +128,6 @@ function onIntroEnd() {
 
 async function onPreloadDone() {
     state.value = "initial-setup";
-    // TODO: should also check to see if game and maps are installed (need to fix bug where interrupted game dl reports as successful install)
-    const installedEngines = await window.engine.getInstalledVersions();
-    console.debug(installedEngines);
-    if (installedEngines.length === 0) {
-        state.value = "initial-setup";
-        return;
-    }
-    const installedGameVersions = await window.game.getInstalledVersions();
-    console.debug(installedGameVersions);
-    if (installedGameVersions.length === 0) {
-        state.value = "initial-setup";
-        return;
-    }
-    state.value = "default";
 }
 
 function onInitialSetupDone() {
@@ -144,6 +139,10 @@ function onInitialSetupDone() {
 <style lang="scss" scoped>
 .view-container {
     flex: auto;
+    transition: transform 0.4s ease-out;
+    &.translated-right {
+        transform: translateX(10%);
+    }
 }
 
 .wrapper {
@@ -157,6 +156,7 @@ function onInitialSetupDone() {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.3);
 }
+
 .splash-options {
     position: fixed;
     display: flex;

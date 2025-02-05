@@ -48,20 +48,37 @@ class StartScriptConverter {
 
             if (battle.battleOptions.mapOptions.startPosType === StartPosType.Boxes) {
                 const startBoxesIndex = battle.battleOptions.mapOptions.startBoxesIndex;
-                const startBoxes = battle.battleOptions.map.startboxesSet[startBoxesIndex].startboxes;
+                const customStartBoxes = battle.battleOptions.mapOptions.customStartBoxes;
 
-                // X and Y are between 0-200
-                const box = startBoxes[allyTeam.id];
-                if (box) {
-                    const { left: startrectleft, top: startrecttop, right: startrectright, bottom: startrectbottom } = spadsPointsToLTRBPercent(box.poly);
-                    Object.assign(allyTeam, {
-                        startrectleft,
-                        startrecttop,
-                        startrectright,
-                        startrectbottom,
-                    });
-                } else {
-                    console.warn(`Ally team ${allyTeam.id} has no defined start area for this map`);
+                if (startBoxesIndex >= 0) {
+                    const startBoxes = battle.battleOptions.map.startboxesSet[startBoxesIndex].startboxes;
+
+                    // X and Y are between 0-200
+                    const box = startBoxes[allyTeam.id];
+                    if (box) {
+                        const { left: startrectleft, top: startrecttop, right: startrectright, bottom: startrectbottom } = spadsPointsToLTRBPercent(box.poly);
+                        Object.assign(allyTeam, {
+                            startrectleft,
+                            startrecttop,
+                            startrectright,
+                            startrectbottom,
+                        });
+                    } else {
+                        console.warn(`Ally team ${allyTeam.id} has no defined start area for this map`);
+                    }
+                } else if (customStartBoxes) {
+                    const box = customStartBoxes[allyTeam.id];
+
+                    if (box) {
+                        Object.assign(allyTeam, {
+                            startrectleft: box.left,
+                            startrecttop: box.top,
+                            startrectright: box.right,
+                            startrectbottom: box.bottom,
+                        });
+                    } else {
+                        console.warn(`Ally team ${allyTeam.id} has no custom defined start area`);
+                    }
                 }
             }
 
@@ -93,7 +110,7 @@ class StartScriptConverter {
                         team: team.id,
                         shortname: teamMember.aiShortName,
                         name: teamMember.name,
-                        host: teamMember.ownerUserId,
+                        host: teamMember.host,
                         options: teamMember.aiOptions,
                     };
                     bots.push(bot);
@@ -110,13 +127,14 @@ class StartScriptConverter {
             });
         });
 
-        for (const bot of bots) {
-            const owner = players.find((player) => player.userId === bot.host);
-            if (!owner) {
-                throw new Error(`Couldn't find owner for bot, ${JSON.stringify(bot)}`);
-            }
-            bot.host = owner.id;
-        }
+        // TODO: Something is not right here
+        // for (const bot of bots) {
+        //     const owner = players.find((player) => player.userId === bot.host);
+        //     if (!owner) {
+        //         throw new Error(`Couldn't find owner for bot, ${JSON.stringify(bot)}`);
+        //     }
+        //     bot.host = owner.id;
+        // }
 
         return {
             gametype: battle.battleOptions.gameVersion,
